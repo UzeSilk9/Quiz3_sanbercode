@@ -1,0 +1,15 @@
+# Dependency folder
+node_modules/
+
+# Cypress output
+cypress/videos/
+cypress/screenshots/
+
+# Env & temp files
+.env
+*.log
+*.tmp
+
+# System / editor files
+.DS_Store
+Thumbs.db
