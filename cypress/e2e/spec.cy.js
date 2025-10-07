@@ -35,7 +35,7 @@ cy.get('.oxd-alert-content').should('contain.text', 'Invalid credentials')
 })
 
 
-it.only('TC04 - Gagal login: kosongkan field username & password (robust check)', function() {
+it('TC04 - Gagal login: kosongkan field username & password (robust check)', function() {
   // buka halaman login
   loginPage.visit()
 
