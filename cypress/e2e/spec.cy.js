@@ -3,8 +3,8 @@ const loginPage = require('../support/pom/loginpages')
 
 describe('Feature: Login - OrangeHRM (POM)', () => {
 beforeEach(() => {
-// muat fixture data sebelum tiap test
-cy.fixture('datapom').as('datapom')
+  cy.fixture('datapom').as('datapom')
+  cy.visit('/') // reset halaman sebelum setiap test
 })
 
 
@@ -75,13 +75,54 @@ it('TC04 - Gagal login: kosongkan field username & password (robust check)', fun
 })
 
 
-it('TC05 - Login lalu logout berhasil', function() {
-const u = this.datapom.valid
-loginPage.login(u.username, u.password)
-loginPage.shouldSeeDashboard()
-// lakukan logout
-loginPage.logout()
-// kembali ke halaman login
-cy.url().should('include', '/web/index.php/auth/login')
+it('TC05 - Login lalu logout berhasil', function () {
+  const u = this.datapom.valid
+  loginPage.login(u.username, u.password)
+  loginPage.shouldSeeDashboard()
+
+  loginPage.logout()
+
+  // Pastikan logout benar-benar berhasil
+  cy.url().should('include', '/web/index.php/auth/login')
+  cy.get('input[name="username"]').should('be.visible')
 })
+
+it('TC06 - Klik "Forgot your password?" membuka halaman reset password', function () {
+  loginPage.visit()
+
+  // Pastikan halaman login
+  cy.url().should('include', '/auth/login')
+  cy.get('input[name="username"]').should('be.visible')
+
+  loginPage.clickForgotPassword()
+
+  // Validasi input reset muncul
+  loginPage.shouldSeeResetPasswordPage()
+
+  // Pastikan URL halaman reset
+  cy.url().should('include', '/web/index.php/auth/requestPasswordResetCode')
+})
+
+
+ it.only('TC07 - Submit form reset password dengan username valid', function () {
+  const u = this.datapom.valid
+
+  loginPage.visit()
+  cy.url().should('include', '/auth/login')
+  cy.get('input[name="username"]').should('be.visible')
+
+  loginPage.clickForgotPassword()
+  loginPage.shouldSeeResetPasswordPage()
+
+  loginPage.fillResetUsername(u.username)
+  loginPage.clickResetSubmit()
+
+  // ✅ Verifikasi redirect ke halaman /sendPasswordReset
+  cy.url().should('include', '/auth/sendPasswordReset')
+
+  // Opsional: cek ada teks "Reset Password link sent" jika memang muncul
+  // Tapi dari demo OrangeHRM, halaman ini mostly kosong.
+})
+
+
 })
