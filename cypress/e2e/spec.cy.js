@@ -104,7 +104,7 @@ it('TC06 - Klik "Forgot your password?" membuka halaman reset password', functio
 })
 
 
- it.only('TC07 - Submit form reset password dengan username valid', function () {
+ it('TC07 - Submit form reset password dengan username valid', function () {
   const u = this.datapom.valid
 
   loginPage.visit()
